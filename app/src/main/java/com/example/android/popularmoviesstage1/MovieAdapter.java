@@ -8,13 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
+
 /**
  * Created by carlosblanco on 1/30/17.
  */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder>{
 
-    Bitmap[] mMovieDataBitmapArray;
+    private ArrayList<Bitmap> mMovieDataBitmapArray;
 
     @Override
     public MovieAdapter.MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -29,14 +31,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     @Override
     public void onBindViewHolder(MovieAdapter.MovieAdapterViewHolder holder, int position) {
-        Bitmap currentMovieBitmal = mMovieDataBitmapArray[position];
-        holder.mMoviePosterImageView.setImageBitmap(currentMovieBitmal);
+        Bitmap currentMovieBitmap = mMovieDataBitmapArray.get(position);
+        holder.mMoviePosterImageView.setImageBitmap(currentMovieBitmap);
     }
 
     @Override
     public int getItemCount() {
         if (mMovieDataBitmapArray == null ) return 0;
-        return mMovieDataBitmapArray.length;
+        return mMovieDataBitmapArray.size();
     }
 
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
@@ -49,7 +51,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         }
     }
 
-    public void setMovieData(Bitmap[] movieData){
+    public void setMovieData(ArrayList<Bitmap>movieData){
         mMovieDataBitmapArray = movieData;
         notifyDataSetChanged();
     }

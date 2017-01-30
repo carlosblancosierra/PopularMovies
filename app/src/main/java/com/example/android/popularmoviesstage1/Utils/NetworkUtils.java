@@ -4,6 +4,8 @@ package com.example.android.popularmoviesstage1.Utils;
  * Created by carlosblanco on 1/28/17.
  */
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
@@ -86,5 +88,19 @@ public class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
+    }
+
+    public static Bitmap loadImage(String posterUrl) {
+        URL imageUrl = null;
+        Bitmap bmp = null;
+        try {
+            imageUrl = new URL(posterUrl);
+            bmp = BitmapFactory.decodeStream(imageUrl.openConnection().getInputStream());
+            return bmp;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
