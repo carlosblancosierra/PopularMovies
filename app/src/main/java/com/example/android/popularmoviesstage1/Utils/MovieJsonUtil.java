@@ -1,0 +1,47 @@
+package com.example.android.popularmoviesstage1.Utils;
+
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+/**
+ * Created by carlosblanco on 1/30/17.
+ */
+
+public class MovieJsonUtil {
+
+    private static String LOG_TAG = MovieJsonUtil.class.getSimpleName();
+
+    public static ArrayList<String> getPicturesURLs(String JsonResponse){
+
+        ArrayList<String> moviePostersArray = new ArrayList<String>();
+
+        try {
+            JSONObject root = new JSONObject(JsonResponse);
+            JSONArray results = root.getJSONArray("results");
+
+            for (int i = 0; i < results.length(); i++){
+                JSONObject movieObject = results.getJSONObject(i);
+                String moviePosterFile = movieObject.getString("poster_path");
+
+                String basePosterUrl = "https://image.tmdb.org/t/p/";
+                String imageFormatSize = "/w154";
+
+                String moviePosterPath = basePosterUrl + imageFormatSize + moviePosterFile;
+                Log.v(LOG_TAG, "Path: " + moviePosterPath);
+
+                moviePostersArray.add(moviePosterPath);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return moviePostersArray;
+
+    }
+}
