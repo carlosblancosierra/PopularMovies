@@ -16,9 +16,8 @@ import java.util.ArrayList;
  * Created by carlosblanco on 1/30/17.
  */
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder>{
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
-    private ArrayList<Bitmap> mMovieDataBitmapArray;
     private ArrayList<MovieObject> mMovieObjects;
 
 
@@ -31,45 +30,52 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForItem, parent, shouldAttachToParentImmediately);
-        view.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, DetailActivity.class);
-                context.startActivity(intent);
-            }
-        });
-        return new MovieAdapterViewHolder(view);    }
+
+        return new MovieAdapterViewHolder(view);
+    }
 
     @Override
-    public void onBindViewHolder(MovieAdapter.MovieAdapterViewHolder holder, int position) {
-        Bitmap currentMovieBitmap = mMovieDataBitmapArray.get(position);
+    public void onBindViewHolder(final MovieAdapter.MovieAdapterViewHolder holder, final int position) {
+
+        Bitmap currentMovieBitmap = mMovieObjects.get(position).getPoster();
+
         holder.mMoviePosterImageView.setImageBitmap(currentMovieBitmap);
 
+        holder.itemView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(holder.itemView.getContext(), DetailActivity.class);
+                intent.putExtra("title", mMovieObjects.get(position).getTitle());
+                intent.putExtra("poster", mMovieObjects.get(position).getPoster());
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        if (mMovieDataBitmapArray == null ) return 0;
-        return mMovieDataBitmapArray.size();
+        if (mMovieObjects == null) return 0;
+        return mMovieObjects.size();
     }
 
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
 
-        public ImageView mMoviePosterImageView;
+        private ImageView mMoviePosterImageView;
 
-        public MovieAdapterViewHolder(View itemView) {
+        private MovieAdapterViewHolder(View itemView) {
             super(itemView);
             mMoviePosterImageView = (ImageView) itemView.findViewById(R.id.list_item_movie_poster);
         }
 
     }
 
-    public void setMovieData(ArrayList<Bitmap>movieData){
-        mMovieDataBitmapArray = movieData;
-        notifyDataSetChanged();
-    }
+//    public void setMovieData(ArrayList<Bitmap> movieData) {
+//        mMovieDataBitmapArray = movieData;
+//        notifyDataSetChanged();
+//    }
 
-    public void setMovieObjects (ArrayList<MovieObject> movieObjects){
+    public void setMovieObjects(ArrayList<MovieObject> movieObjects) {
         mMovieObjects = movieObjects;
+        notifyDataSetChanged();
     }
 }

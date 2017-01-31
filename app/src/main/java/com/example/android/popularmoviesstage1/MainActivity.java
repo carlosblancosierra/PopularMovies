@@ -8,6 +8,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -18,12 +19,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<ArrayList<Bitmap>> {
+        implements LoaderManager.LoaderCallbacks<ArrayList<MovieObject>> {
 
     private int LOADER_ID = 1;
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
     private MovieAdapter mMovieAdapter;
+    private String LOG_TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,15 +67,15 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public Loader<ArrayList<Bitmap>> onCreateLoader(int id, Bundle args) {
-        return new AsyncTaskLoader<ArrayList<Bitmap>>(this) {
+    public Loader<ArrayList<MovieObject>> onCreateLoader(int id, Bundle args) {
+        return new AsyncTaskLoader<ArrayList<MovieObject>>(this) {
 
-            ArrayList<Bitmap> bitmapArrayList = null;
+            ArrayList<MovieObject> movieObjects = null;
 
             @Override
             protected void onStartLoading() {
-                if (bitmapArrayList != null) {
-                    deliverResult(bitmapArrayList);
+                if (movieObjects != null) {
+                    deliverResult(movieObjects);
                 } else {
                     showProgressBar();
                     forceLoad();
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             @Override
-            public ArrayList<Bitmap> loadInBackground() {
+            public ArrayList<MovieObject> loadInBackground() {
 
                 String jsonResponse = "";
 
@@ -89,17 +91,19 @@ public class MainActivity extends AppCompatActivity
                 try {
                     jsonResponse = NetworkUtils.getResponseFromHttpUrl(NetworkUtils.buildUrl());
                     if (jsonResponse != null) {
-                        ArrayList<String> moviesPosterArray = MovieJsonUtil.getPicturesURLs(jsonResponse);
-                        bitmapArrayList = new ArrayList<>();
-                        for (int i = 0; i < moviesPosterArray.size(); i++) {
 
+                        movieObjects = MovieJsonUtil.getMovieObjects(jsonResponse);
+                        ArrayList<String> moviesPosterArray = MovieJsonUtil.getPicturesURLs(jsonResponse);
+
+                        for (int i = 0; i < moviesPosterArray.size(); i++) {
                             String moviePosterFile = moviesPosterArray.get(i);
                             Bitmap currentPosterBitmap = NetworkUtils.loadImage(moviePosterFile);
-                            bitmapArrayList.add(currentPosterBitmap);
+                            movieObjects.get(i).setPoster(currentPosterBitmap);
+                            Log.v(LOG_TAG, "Movie Object: " + movieObjects.get(i).getTitle() + " poster: "
+                                    + moviePosterFile);
                         }
                     }
-
-                    return bitmapArrayList;
+                    return movieObjects;
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -108,21 +112,21 @@ public class MainActivity extends AppCompatActivity
             }
 
             @Override
-            public void deliverResult(ArrayList<Bitmap> data) {
-                bitmapArrayList = data;
+            public void deliverResult(ArrayList<MovieObject> data) {
+                movieObjects = data;
                 super.deliverResult(data);
             }
         };
     }
 
     @Override
-    public void onLoadFinished(Loader<ArrayList<Bitmap>> loader, ArrayList<Bitmap> data) {
+    public void onLoadFinished(Loader<ArrayList<MovieObject>> loader, ArrayList<MovieObject> data) {
         showResults();
-        mMovieAdapter.setMovieData(data);
+        mMovieAdapter.setMovieObjects(data);
     }
 
     @Override
-    public void onLoaderReset(Loader<ArrayList<Bitmap>> loader) {
+    public void onLoaderReset(Loader<ArrayList<MovieObject>> loader) {
 
     }
 }

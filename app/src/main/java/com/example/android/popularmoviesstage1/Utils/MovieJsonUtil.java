@@ -2,6 +2,8 @@ package com.example.android.popularmoviesstage1.Utils;
 
 import android.util.Log;
 
+import com.example.android.popularmoviesstage1.MovieObject;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +20,7 @@ public class MovieJsonUtil {
 
     public static ArrayList<String> getPicturesURLs(String JsonResponse){
 
-        ArrayList<String> moviePostersArray = new ArrayList<String>();
+        ArrayList<String> moviePostersArray = new ArrayList<>();
 
         try {
             JSONObject root = new JSONObject(JsonResponse);
@@ -42,6 +44,28 @@ public class MovieJsonUtil {
         }
 
         return moviePostersArray;
+    }
 
+    public static ArrayList<MovieObject> getMovieObjects(String JsonResponse){
+
+        ArrayList<MovieObject> movieObjectArrayList = new ArrayList<>();
+
+        try {
+            JSONObject root = new JSONObject(JsonResponse);
+            JSONArray results = root.getJSONArray("results");
+
+            for (int i = 0; i < results.length(); i++){
+                JSONObject movieObject = results.getJSONObject(i);
+
+                String title = movieObject.getString("title");
+                movieObjectArrayList.add(new MovieObject(title));
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return movieObjectArrayList;
     }
 }
