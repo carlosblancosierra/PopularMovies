@@ -4,10 +4,13 @@ package com.example.android.popularmoviesstage1.Utils;
  * Created by carlosblanco on 1/28/17.
  */
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
+
+import com.example.android.popularmoviesstage1.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,8 +48,19 @@ public class NetworkUtils {
      *
      * @return The URL to use to query the weather server.
      */
-    public static URL buildUrl() {
-        Uri builtUri = Uri.parse(TMBD_POPULAR_BASE_URL).buildUpon()
+    public static URL buildUrl(String preferedOption, Context context) {
+
+        String optionTopRated = context.getString(R.string.pref_list_options_top_rated_value);
+        String optionMostPopular = context.getString(R.string.pref_list_options_popular_value);
+
+        String baseUrl = "";
+        if (preferedOption.equals(optionMostPopular)){
+            baseUrl = TMBD_POPULAR_BASE_URL;
+        } else if (preferedOption.equals(optionTopRated)){
+            baseUrl = TMBD_TOP_RATED_BASE_URL;
+        }
+
+        Uri builtUri = Uri.parse(baseUrl).buildUpon()
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)
                 .appendQueryParameter(PARAM_LANGUAGE, PARAM_LANGUAGE_ENGLISH)
                 .appendQueryParameter(PARAM_PAGE, PARAM_PAGE_QUANTITY)

@@ -16,7 +16,7 @@ public class MovieObject {
 
     public MovieObject(String title, String releaseDate, String voteAverage, String overview) {
         mTitle = title;
-        mReleaseDate = releaseDate;
+        mReleaseDate = "(" + releaseDate.substring(0,4) + ")";
         mVoteAverage = voteAverage;
         mOverview = overview;
     }
