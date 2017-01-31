@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
 
+        mMovieAdapter = new MovieAdapter();
+
         GridLayoutManager manager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(manager);
 
@@ -42,7 +44,6 @@ public class MainActivity extends AppCompatActivity
          */
         mRecyclerView.setHasFixedSize(true);
 
-        mMovieAdapter = new MovieAdapter();
 
         mRecyclerView.setAdapter(mMovieAdapter);
 
@@ -50,15 +51,14 @@ public class MainActivity extends AppCompatActivity
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
 
-
     }
 
-    public void showProgressBar () {
+    public void showProgressBar() {
         mRecyclerView.setVisibility(View.INVISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
-    public void showResults () {
+    public void showResults() {
         mProgressBar.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
@@ -67,12 +67,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     public Loader<ArrayList<Bitmap>> onCreateLoader(int id, Bundle args) {
         return new AsyncTaskLoader<ArrayList<Bitmap>>(this) {
-            ArrayList<Bitmap> bitmapArrayList = new ArrayList<>();
+
+            ArrayList<Bitmap> bitmapArrayList = null;
 
             @Override
             protected void onStartLoading() {
-                showProgressBar();
-                forceLoad();
+                if (bitmapArrayList != null) {
+                    deliverResult(bitmapArrayList);
+                } else {
+                    showProgressBar();
+                    forceLoad();
+                }
             }
 
             @Override
@@ -83,26 +88,28 @@ public class MainActivity extends AppCompatActivity
 
                 try {
                     jsonResponse = NetworkUtils.getResponseFromHttpUrl(NetworkUtils.buildUrl());
+                    if (jsonResponse != null) {
+                        ArrayList<String> moviesPosterArray = MovieJsonUtil.getPicturesURLs(jsonResponse);
+                        bitmapArrayList = new ArrayList<>();
+                        for (int i = 0; i < moviesPosterArray.size(); i++) {
+
+                            String moviePosterFile = moviesPosterArray.get(i);
+                            Bitmap currentPosterBitmap = NetworkUtils.loadImage(moviePosterFile);
+                            bitmapArrayList.add(currentPosterBitmap);
+                        }
+                    }
+
+                    return bitmapArrayList;
+
                 } catch (IOException e) {
                     e.printStackTrace();
+                    return null;
                 }
-
-                if (jsonResponse != null) {
-                    ArrayList<String> moviesPosterArray = MovieJsonUtil.getPicturesURLs(jsonResponse);
-
-                    for (int i = 0; i < moviesPosterArray.size(); i++) {
-
-                        String moviePosterFile = moviesPosterArray.get(i);
-                        Bitmap currentPosterBitmap = NetworkUtils.loadImage(moviePosterFile);
-                        bitmapArrayList.add(currentPosterBitmap);
-                    }
-                }
-
-                return bitmapArrayList;
             }
 
             @Override
             public void deliverResult(ArrayList<Bitmap> data) {
+                bitmapArrayList = data;
                 super.deliverResult(data);
             }
         };
@@ -118,5 +125,4 @@ public class MainActivity extends AppCompatActivity
     public void onLoaderReset(Loader<ArrayList<Bitmap>> loader) {
 
     }
-
 }
