@@ -58,7 +58,11 @@ public class MovieJsonUtil {
                 JSONObject movieObject = results.getJSONObject(i);
 
                 String title = movieObject.getString("title");
-                movieObjectArrayList.add(new MovieObject(title));
+                String releaseDate = movieObject.getString("release_date");
+                String voteAverage = movieObject.getString("vote_average");
+                String overview = movieObject.getString("overview");
+
+                movieObjectArrayList.add(new MovieObject(title, releaseDate, voteAverage, overview));
 
             }
 

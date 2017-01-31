@@ -19,6 +19,12 @@ import java.util.ArrayList;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
     private ArrayList<MovieObject> mMovieObjects;
+    public String TITLE = "title";
+    public String POSTER = "poster";
+    public String RELEASE_DATE = "date";
+    public String VOTE_AVERAGE = "vote_average";
+    public String OVERVIEW = "overview";
+
 
 
     @Override
@@ -35,19 +41,28 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     @Override
-    public void onBindViewHolder(final MovieAdapter.MovieAdapterViewHolder holder, final int position) {
+    public void onBindViewHolder(MovieAdapter.MovieAdapterViewHolder holder, final int position) {
 
-        Bitmap currentMovieBitmap = mMovieObjects.get(position).getPoster();
+        final MovieObject currentMovie = mMovieObjects.get(position);
+        final Context context = holder.itemView.getContext();
+
+        Bitmap currentMovieBitmap = currentMovie.getPoster();
 
         holder.mMoviePosterImageView.setImageBitmap(currentMovieBitmap);
 
         holder.itemView.setOnClickListener(new OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(holder.itemView.getContext(), DetailActivity.class);
-                intent.putExtra("title", mMovieObjects.get(position).getTitle());
-                intent.putExtra("poster", mMovieObjects.get(position).getPoster());
-                holder.itemView.getContext().startActivity(intent);
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra(TITLE, currentMovie.getTitle());
+                intent.putExtra(POSTER, currentMovie.getPoster());
+                intent.putExtra(RELEASE_DATE, currentMovie.getReleaseDate());
+                intent.putExtra(VOTE_AVERAGE, currentMovie.getVoteAverage());
+                intent.putExtra(OVERVIEW, currentMovie.getOverview());
+
+
+                context.startActivity(intent);
             }
         });
     }
@@ -69,10 +84,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     }
 
-//    public void setMovieData(ArrayList<Bitmap> movieData) {
-//        mMovieDataBitmapArray = movieData;
-//        notifyDataSetChanged();
-//    }
 
     public void setMovieObjects(ArrayList<MovieObject> movieObjects) {
         mMovieObjects = movieObjects;

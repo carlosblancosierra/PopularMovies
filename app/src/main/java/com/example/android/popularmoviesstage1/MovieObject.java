@@ -9,9 +9,16 @@ import android.graphics.Bitmap;
 public class MovieObject {
     private String mTitle;
     private Bitmap mPosterBitmap;
+    private String mReleaseDate;
+    private String mVoteAverage;
+    private String mOverview;
 
-    public MovieObject(String title) {
+
+    public MovieObject(String title, String releaseDate, String voteAverage, String overview) {
         mTitle = title;
+        mReleaseDate = releaseDate;
+        mVoteAverage = voteAverage;
+        mOverview = overview;
     }
 
     public String getTitle() {
@@ -24,6 +31,18 @@ public class MovieObject {
 
     public void setPoster(Bitmap posterBitmap) {
         mPosterBitmap = posterBitmap;
+    }
+
+    public String getReleaseDate() {
+        return mReleaseDate;
+    }
+
+    public String getVoteAverage() {
+        return mVoteAverage;
+    }
+
+    public String getOverview() {
+        return mOverview;
     }
 }
 

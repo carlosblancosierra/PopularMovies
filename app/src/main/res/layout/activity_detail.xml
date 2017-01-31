@@ -24,4 +24,27 @@
         android:textAppearance="?android:textAppearanceLarge"
         android:layout_height="wrap_content"
         tools:text="Movie Title"/>
+
+    <TextView
+        android:id="@+id/detail_view_movie_release_date"
+        android:layout_width="match_parent"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:layout_height="wrap_content"
+        tools:text="Movie Title"/>
+
+    <TextView
+        android:id="@+id/detail_view_movie_vote_average"
+        android:layout_width="match_parent"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:layout_height="wrap_content"
+        tools:text="Movie Title"/>
+
+    <TextView
+        android:id="@+id/detail_view_movie_overview"
+        android:layout_width="match_parent"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:layout_height="wrap_content"
+        tools:text="Movie Title"/>
+
+
 </LinearLayout>
