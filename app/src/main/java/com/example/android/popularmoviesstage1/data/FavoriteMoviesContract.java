@@ -24,17 +24,12 @@ public class FavoriteMoviesContract {
         public static final String TABLE_NAME = "weather";
 
         public static final String COLUMN_DATE = "date";
-        public static final String DATA_TYPE_DATE = "STRING";
-
 
         public static final String COLUMN_POSTER = "poster";
-        public static final String DATA_POSTER = "STRING";
 
         public static final String COLUMN_SYNOPSIS = "synopsis";
-        public static final String DATA_SYNOPSIS = "STRING";
 
         public static final String COLUMN_RATING = "rating";
-        public static final String DATA_RATING = "REAL";
 
 
     }
