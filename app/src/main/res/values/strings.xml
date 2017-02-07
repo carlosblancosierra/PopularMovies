@@ -27,4 +27,6 @@
     <string name="pref_list_options_popular_value">popular</string>
     <string name="app_name_header">Popular Movies</string>
 
+    <string name="authority">com.example.android.popularmoviesstage1</string>
+
 </resources>
