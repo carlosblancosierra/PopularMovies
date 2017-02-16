@@ -31,6 +31,11 @@ public class FavoriteMoviesContract {
 
         public static final String COLUMN_RATING = "rating";
 
+        public static final String COLUMN_MOVIE_ID = "movie_id";
+
+        public static final String COLUMN_TRAILER_URL = "trailer_url";
+
+
 
     }
 
