@@ -27,7 +27,9 @@ public class FavoriteMoviesDbHelper extends SQLiteOpenHelper {
 
                         FavoriteMoviesEntry._ID                + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
-                        FavoriteMoviesEntry.COLUMN_MOVIE_ID    + " INTEGER NOT NULL, " +
+                        FavoriteMoviesEntry.COLUMN_TITLE    + " STRING NOT NULL, " +
+
+                        FavoriteMoviesEntry.COLUMN_MOVIE_ID    + " REAL NOT NULL, " +
 
                         FavoriteMoviesEntry.COLUMN_TRAILER_URL + " STRING NOT NULL, " +
 

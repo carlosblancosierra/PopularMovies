@@ -61,8 +61,9 @@ public class MovieJsonUtil {
                 String releaseDate = movieObject.getString("release_date");
                 String voteAverage = movieObject.getString("vote_average");
                 String overview = movieObject.getString("overview");
+                String movieId = movieObject.getString("id");
 
-                movieObjectArrayList.add(new MovieObject(title, releaseDate, voteAverage, overview));
+                movieObjectArrayList.add(new MovieObject(title, releaseDate, voteAverage, overview, movieId));
 
             }
 
@@ -71,5 +72,59 @@ public class MovieJsonUtil {
         }
 
         return movieObjectArrayList;
+    }
+
+    public static ArrayList<ArrayList<String>> getMovieVideos(String jsonVideos){
+
+        ArrayList<ArrayList<String>> videosArrayList = new ArrayList<>();
+
+        try {
+            JSONObject root = new JSONObject(jsonVideos);
+            JSONArray results = root.getJSONArray("results");
+
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject videoObject = results.getJSONObject(i);
+
+                String name = videoObject.getString("name").trim();
+                String key = videoObject.getString("key").trim();
+
+                ArrayList<String> video = new ArrayList<>();
+
+                video.add(name);
+                video.add(key);
+                videosArrayList.add(video);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return videosArrayList;
+    }
+
+    public static ArrayList<ArrayList<String>> getMovieReviews(String jsonVideos){
+
+        ArrayList<ArrayList<String>> reviewsArrayList = new ArrayList<>();
+
+        try {
+            JSONObject root = new JSONObject(jsonVideos);
+            JSONArray results = root.getJSONArray("results");
+
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject videoObject = results.getJSONObject(i);
+
+                String name = videoObject.getString("author").trim();
+                String key = videoObject.getString("content").trim();
+
+                ArrayList<String> review = new ArrayList<>();
+
+                review.add(name);
+                review.add(key);
+                reviewsArrayList.add(review);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return reviewsArrayList;
     }
 }

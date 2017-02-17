@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <LinearLayout
@@ -18,7 +18,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="5dp">
-
 
             <TextView
                 android:id="@+id/detail_view_movie_title"
@@ -64,15 +63,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="Favorite"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@android:color/white"
-                android:text="Favorite"/>
+                android:textColor="@android:color/white" />
 
             <CheckBox
+                android:id="@+id/action_fav"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -101,6 +102,32 @@
             she forges an alliance with Max Rockatansky (Tom Hardy), a loner and former captive.
             Fortified in the massive, armored truck the War Rig, they try to outrun the ruthless
             warlord and his henchmen in a deadly high-speed chase through the Wasteland" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@android:color/white"
+            android:text="Related Videos" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/detail_recyclerview_trailers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@android:color/white"
+            android:text="Reviews" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/detail_recyclerview_reviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
 
     </LinearLayout>

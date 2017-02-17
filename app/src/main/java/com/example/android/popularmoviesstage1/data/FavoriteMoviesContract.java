@@ -23,6 +23,8 @@ public class FavoriteMoviesContract {
 
         public static final String TABLE_NAME = "weather";
 
+        public static final String COLUMN_TITLE = "title";
+
         public static final String COLUMN_DATE = "date";
 
         public static final String COLUMN_POSTER = "poster";

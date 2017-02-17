@@ -24,6 +24,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public String RELEASE_DATE = "date";
     public String VOTE_AVERAGE = "vote_average";
     public String OVERVIEW = "overview";
+    public String MOVIE_ID = "id";
 
 
 
@@ -60,6 +61,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
                 intent.putExtra(RELEASE_DATE, currentMovie.getReleaseDate());
                 intent.putExtra(VOTE_AVERAGE, currentMovie.getVoteAverage());
                 intent.putExtra(OVERVIEW, currentMovie.getOverview());
+                intent.putExtra(MOVIE_ID, currentMovie.getMovieId());
 
 
                 context.startActivity(intent);

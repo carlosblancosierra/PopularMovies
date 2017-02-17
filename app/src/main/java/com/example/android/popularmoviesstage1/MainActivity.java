@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public Loader<ArrayList<MovieObject>> onCreateLoader(int id, Bundle args) {
+
         return new AsyncTaskLoader<ArrayList<MovieObject>>(this) {
 
             ArrayList<MovieObject> movieObjects = null;
@@ -106,11 +107,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public ArrayList<MovieObject> loadInBackground() {
 
-
-
                 String jsonResponse = "";
-
-
                 try {
                     jsonResponse = NetworkUtils.getResponseFromHttpUrl(NetworkUtils.buildUrl(preferredList, MainActivity.this));
                     if (jsonResponse != null) {

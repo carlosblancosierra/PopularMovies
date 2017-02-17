@@ -12,13 +12,15 @@ public class MovieObject {
     private String mReleaseDate;
     private String mVoteAverage;
     private String mOverview;
+    private String mMovieId;
 
 
-    public MovieObject(String title, String releaseDate, String voteAverage, String overview) {
+    public MovieObject(String title, String releaseDate, String voteAverage, String overview, String movieID) {
         mTitle = title;
-        mReleaseDate = "(" + releaseDate.substring(0,4) + ")";
+        mReleaseDate = "(" + releaseDate.substring(0, 4) + ")";
         mVoteAverage = voteAverage;
         mOverview = overview;
+        mMovieId = movieID;
     }
 
     public String getTitle() {
@@ -43,6 +45,10 @@ public class MovieObject {
 
     public String getOverview() {
         return mOverview;
+    }
+
+    public String getMovieId() {
+        return mMovieId;
     }
 }
 
