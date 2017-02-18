@@ -26,11 +26,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<ArrayList<MovieObject>>,
+        implements LoaderManager.LoaderCallbacks,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private String TAG = MainActivity.class.getSimpleName();
-    private int LOADER_ID = 1;
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
     private MovieAdapter mMovieAdapter;
@@ -38,6 +37,7 @@ public class MainActivity extends AppCompatActivity
     private boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
     private String PAGE_TITE;
     private TextView mPageTitleTextView;
+    private int loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +57,15 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+        loader = getPreferredList();
+
+        getSupportLoaderManager().initLoader(loader, null, this);
 
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
         setUpPageTitle();
+
+
     }
 
     public void showProgressBar() {
@@ -76,25 +80,16 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public Loader<ArrayList<MovieObject>> onCreateLoader(int id, Bundle args) {
+    public Loader onCreateLoader(final int loaderId, Bundle args) {
 
-        return new AsyncTaskLoader<ArrayList<MovieObject>>(this) {
+
+        return new AsyncTaskLoader(this) {
 
             ArrayList<MovieObject> movieObjects = null;
-            String preferredList;
 
             @Override
             protected void onStartLoading() {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                String preferenceListKey = getString(R.string.pref_list_key);
-                String preferredListDefault = getString(R.string.pref_list_options_popular_value);
-                preferredList = sharedPreferences.getString(preferenceListKey, preferredListDefault);
 
-                if (preferredList.equals(preferredListDefault)){
-                    PAGE_TITE = getString(R.string.pref_list_options_popular_label);
-                } else {
-                    PAGE_TITE = getString(R.string.pref_list_options_top_rated_label);
-                }
                 setUpPageTitle();
                 if (movieObjects != null) {
                     deliverResult(movieObjects);
@@ -105,11 +100,10 @@ public class MainActivity extends AppCompatActivity
             }
 
             @Override
-            public ArrayList<MovieObject> loadInBackground() {
-
+            public Object loadInBackground() {
                 String jsonResponse = "";
                 try {
-                    jsonResponse = NetworkUtils.getResponseFromHttpUrl(NetworkUtils.buildUrl(preferredList, MainActivity.this));
+                    jsonResponse = NetworkUtils.getResponseFromHttpUrl(NetworkUtils.buildUrl(loaderId, MainActivity.this));
                     if (jsonResponse != null) {
 
                         movieObjects = MovieJsonUtil.getMovieObjects(jsonResponse);
@@ -132,24 +126,77 @@ public class MainActivity extends AppCompatActivity
             }
 
             @Override
-            public void deliverResult(ArrayList<MovieObject> data) {
-                movieObjects = data;
+            public void deliverResult(Object data) {
+                movieObjects = (ArrayList<MovieObject>) data;
                 super.deliverResult(data);
             }
         };
+
+//        return new AsyncTaskLoader<ArrayList<MovieObject>>(this) {
+//
+//            ArrayList<MovieObject> movieObjects = null;
+//
+//            @Override
+//            protected void onStartLoading() {
+//
+//                setUpPageTitle();
+//                if (movieObjects != null) {
+//                    deliverResult(movieObjects);
+//                } else {
+//                    showProgressBar();
+//                    forceLoad();
+//                }
+//            }
+//
+//            @Override
+//            public ArrayList<MovieObject> loadInBackground() {
+//
+//                String jsonResponse = "";
+//                try {
+//                    jsonResponse = NetworkUtils.getResponseFromHttpUrl(NetworkUtils.buildUrl(loaderId, MainActivity.this));
+//                    if (jsonResponse != null) {
+//
+//                        movieObjects = MovieJsonUtil.getMovieObjects(jsonResponse);
+//                        ArrayList<String> moviesPosterArray = MovieJsonUtil.getPicturesURLs(jsonResponse);
+//
+//                        for (int i = 0; i < moviesPosterArray.size(); i++) {
+//                            String moviePosterFile = moviesPosterArray.get(i);
+//                            Bitmap currentPosterBitmap = NetworkUtils.loadImage(moviePosterFile);
+//                            movieObjects.get(i).setPoster(currentPosterBitmap);
+//                            Log.v(LOG_TAG, "Movie Object: " + movieObjects.get(i).getTitle() + " poster: "
+//                                    + moviePosterFile);
+//                        }
+//                    }
+//                    return movieObjects;
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    return null;
+//                }
+//            }
+//
+//            @Override
+//            public void deliverResult(ArrayList<MovieObject> data) {
+//                movieObjects = data;
+//                super.deliverResult(data);
+//            }
+//        };
     }
 
     @Override
-    public void onLoadFinished(Loader<ArrayList<MovieObject>> loader, ArrayList<MovieObject> data) {
+    public void onLoadFinished(Loader loader, Object data) {
         showResults();
-        mMovieAdapter.setMovieObjects(data);
+
+        ArrayList movies = (ArrayList) data;
+        mMovieAdapter.setMovieObjects(movies);
         setUpPageTitle();
     }
 
     @Override
-    public void onLoaderReset(Loader<ArrayList<MovieObject>> loader) {
+    public void onLoaderReset(Loader loader) {
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -183,7 +230,8 @@ public class MainActivity extends AppCompatActivity
         if (PREFERENCES_HAVE_BEEN_UPDATED) {
             Log.d(TAG, "onStart: preferences were updated");
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
+            loader = getPreferredList();
+            getSupportLoaderManager().restartLoader(loader, null, this);
             PREFERENCES_HAVE_BEEN_UPDATED = false;
         }
 
@@ -199,9 +247,42 @@ public class MainActivity extends AppCompatActivity
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    private void setUpPageTitle(){
-        if (PAGE_TITE != null){
+    private void setUpPageTitle() {
+
+        if (PAGE_TITE != null) {
             mPageTitleTextView.setText(PAGE_TITE);
         }
+    }
+
+    public int getPreferredList() {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+
+        String preferenceListKey = getString(R.string.pref_list_key);
+
+        String preferredListDefault = getString(R.string.pref_list_options_popular_value);
+        String preferredListTopRated = getString(R.string.pref_list_options_top_rated_value);
+        String preferredListFavorites = getString(R.string.pref_list_options_favorites_value);
+
+        String preferredList = sharedPreferences.getString(preferenceListKey, preferredListDefault);
+
+
+        int preferredListID;
+
+        if (preferredList.equals(preferredListDefault)) {
+            PAGE_TITE = getString(R.string.pref_list_options_popular_label);
+            preferredListID = NetworkUtils.CODE_POPULAR;
+
+        } else if (preferredList.equals(preferredListTopRated)) {
+            PAGE_TITE = getString(R.string.pref_list_options_top_rated_label);
+            preferredListID = NetworkUtils.CODE_TOP_RATED;
+
+        } else {
+            PAGE_TITE = getString(R.string.pref_list_options_favorites_label);
+            preferredListID = NetworkUtils.CODE_FAVORITES;
+        }
+
+        Log.v(LOG_TAG, "List value: " + preferredList + ", id: " + preferredListID );
+        return preferredListID;
     }
 }

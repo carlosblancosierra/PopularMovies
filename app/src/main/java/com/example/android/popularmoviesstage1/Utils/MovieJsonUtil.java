@@ -1,7 +1,5 @@
 package com.example.android.popularmoviesstage1.Utils;
 
-import android.util.Log;
-
 import com.example.android.popularmoviesstage1.MovieObject;
 
 import org.json.JSONArray;
@@ -34,7 +32,7 @@ public class MovieJsonUtil {
                 String imageFormatSize = "/w154";
 
                 String moviePosterPath = basePosterUrl + imageFormatSize + moviePosterFile;
-                Log.v(LOG_TAG, "Path: " + moviePosterPath);
+//                Log.v(LOG_TAG, "Path: " + moviePosterPath);
 
                 moviePostersArray.add(moviePosterPath);
             }

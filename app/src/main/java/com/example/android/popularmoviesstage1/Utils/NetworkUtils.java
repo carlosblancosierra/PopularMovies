@@ -10,8 +10,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
-import com.example.android.popularmoviesstage1.R;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -44,17 +42,24 @@ public class NetworkUtils {
     final static String YOUTUBE_BASE_URI = "https://www.youtube.com/watch";
     final static String YOUTUBE_PARAMETER = "v";
 
+    public final static int CODE_POPULAR = 0;
+    public final static int CODE_TOP_RATED = 1;
+    public final static int CODE_FAVORITES = 2;
 
-    public static URL buildUrl(String preferedOption, Context context) {
 
-        String optionTopRated = context.getString(R.string.pref_list_options_top_rated_value);
-        String optionMostPopular = context.getString(R.string.pref_list_options_popular_value);
+    public static URL buildUrl(int preferredOptionId, Context context) {
 
         String baseUrl = "";
-        if (preferedOption.equals(optionMostPopular)){
-            baseUrl = TMBD_POPULAR_BASE_URL;
-        } else if (preferedOption.equals(optionTopRated)){
-            baseUrl = TMBD_TOP_RATED_BASE_URL;
+
+        switch (preferredOptionId) {
+            case (CODE_POPULAR):
+                baseUrl = TMBD_POPULAR_BASE_URL;
+                break;
+            case (CODE_TOP_RATED):
+                baseUrl = TMBD_TOP_RATED_BASE_URL;
+                break;
+            default:
+                return null;
         }
 
         Uri builtUri = Uri.parse(baseUrl).buildUpon()
