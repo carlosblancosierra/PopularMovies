@@ -1,17 +1,17 @@
 package com.example.android.popularmoviesstage1;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.android.popularmoviesstage1.data.FavoriteMoviesContract;
+import com.example.android.popularmoviesstage1.data.FavoriteMoviesContract.FavoriteMoviesEntry;
 
 /**
  * Created by carlosblanco on 2/18/17.
@@ -50,23 +50,58 @@ public class MoviesCursorAdapter extends RecyclerView.Adapter<MoviesCursorAdapte
     }
 
     @Override
-    public void onBindViewHolder(MoviesViewHolder holder, int position) {
+    public void onBindViewHolder(final MoviesViewHolder holder, int position) {
 
         if (mCursor.getCount() != 0) {
 
             mCursor.moveToPosition(position);
-            int posterColumnIndex = mCursor.getColumnIndex(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_POSTER);
-            Log.v(LOG_TAG, "posterColumnIndex: " + posterColumnIndex);
 
-            Log.v(LOG_TAG, "mCursor count: " + mCursor.getCount());
-            Log.v(LOG_TAG, "mCursor columnCount: " + mCursor.getColumnCount());
+            int posterColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_POSTER);
 
 
+//            Log.v(LOG_TAG, "posterColumnIndex: " + posterColumnIndex);
+//            Log.v(LOG_TAG, "mCursor count: " + mCursor.getCount());
+//            Log.v(LOG_TAG, "mCursor columnCount: " + mCursor.getColumnCount());
+
+
+            // set poster
             byte[] posterByte = mCursor.getBlob(posterColumnIndex);
-
-            Bitmap posterBitmap = BitmapFactory.decodeByteArray(posterByte, 0, posterByte.length);
-
+            final Bitmap posterBitmap = BitmapFactory.decodeByteArray(posterByte, 0, posterByte.length);
             holder.posterImageView.setImageBitmap(posterBitmap);
+
+
+
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+
+                    int titleColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_TITLE);
+                    int releaseDateColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_DATE);
+                    int ratingColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_RATING);
+                    int synopsisColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_SYNOPSIS);
+                    int movieIdColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_MOVIE_ID);
+
+                    String title = mCursor.getString(titleColumnIndex);
+                    String rating = mCursor.getString(ratingColumnIndex);
+                    String releaseDate = mCursor.getString(releaseDateColumnIndex);
+                    String synopsis = mCursor.getString(synopsisColumnIndex);
+                    String movieId = mCursor.getString(movieIdColumnIndex);
+
+                    Context context = holder.posterImageView.getContext();
+
+                    Intent intent = new Intent(context, DetailActivity.class);
+                    intent.putExtra(DetailActivity.TITLE, title);
+                    intent.putExtra(DetailActivity.POSTER, posterBitmap);
+                    intent.putExtra(DetailActivity.RELEASE_DATE, releaseDate);
+                    intent.putExtra(DetailActivity.VOTE_AVERAGE, rating);
+                    intent.putExtra(DetailActivity.OVERVIEW, synopsis);
+                    intent.putExtra(DetailActivity.MOVIE_ID, movieId);
+
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 

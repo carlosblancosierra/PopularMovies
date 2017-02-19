@@ -46,12 +46,12 @@ public class DetailActivity extends AppCompatActivity
     private String overview;
     private String mMovieId;
 
-    public String TITLE = "title";
-    public String POSTER = "poster";
-    public String RELEASE_DATE = "date";
-    public String VOTE_AVERAGE = "vote_average";
-    public String OVERVIEW = "overview";
-    public String MOVIE_ID = "id";
+    public static String TITLE = "title";
+    public static String POSTER = "poster";
+    public static String RELEASE_DATE = "date";
+    public static String VOTE_AVERAGE = "vote_average";
+    public static String OVERVIEW = "overview";
+    public static String MOVIE_ID = "id";
 
     private VideosAdapter mVideosAdapter;
     private ReviewsAdapter mReviewsAdapter;
@@ -125,11 +125,11 @@ public class DetailActivity extends AppCompatActivity
 
                 String mimeType = "text/plain";
 
-                // COMPLETED (3) Create a title for the chooser window that will pop up
+                // Create a title for the chooser window that will pop up
         /* This is just the title of the window that will pop up when we call startActivity */
-                String title = "Learning How to Share";
+                String title = "Movie Trailer";
 
-                // COMPLETED (4) Use ShareCompat.IntentBuilder to build the Intent and start the chooser
+                // Use ShareCompat.IntentBuilder to build the Intent and start the chooser
         /* ShareCompat.IntentBuilder provides a fluent API for creating Intents */
                 ShareCompat.IntentBuilder
                 /* The from method specifies the Context from which this share is coming from */
@@ -155,11 +155,13 @@ public class DetailActivity extends AppCompatActivity
         posterBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
 
-//        values.put(FavoriteMoviesEntry.COLUMN_DATE, releaseDate);
+        values.put(FavoriteMoviesEntry.COLUMN_DATE, releaseDate);
         values.put(FavoriteMoviesEntry.COLUMN_POSTER, byteArray);
-//        values.put(FavoriteMoviesEntry.COLUMN_RATING, voteAverage);
-//        values.put(FavoriteMoviesEntry.COLUMN_SYNOPSIS, overview);
-//        values.put(FavoriteMoviesEntry.COLUMN_TITLE, title);
+        values.put(FavoriteMoviesEntry.COLUMN_RATING, voteAverage);
+        values.put(FavoriteMoviesEntry.COLUMN_SYNOPSIS, overview);
+        values.put(FavoriteMoviesEntry.COLUMN_TITLE, title);
+        values.put(FavoriteMoviesEntry.COLUMN_MOVIE_ID, mMovieId);
+
 
         getContentResolver().insert(FavoriteMoviesEntry.CONTENT_URI, values);
 

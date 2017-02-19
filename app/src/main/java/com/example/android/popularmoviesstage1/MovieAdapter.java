@@ -19,13 +19,6 @@ import java.util.ArrayList;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
     private ArrayList<MovieObject> mMovieObjects;
-    public String TITLE = "title";
-    public String POSTER = "poster";
-    public String RELEASE_DATE = "date";
-    public String VOTE_AVERAGE = "vote_average";
-    public String OVERVIEW = "overview";
-    public String MOVIE_ID = "id";
-
 
 
     @Override
@@ -47,7 +40,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         final MovieObject currentMovie = mMovieObjects.get(position);
         final Context context = holder.itemView.getContext();
 
-        Bitmap currentMovieBitmap = currentMovie.getPoster();
+        final Bitmap currentMovieBitmap = currentMovie.getPoster();
 
         holder.mMoviePosterImageView.setImageBitmap(currentMovieBitmap);
 
@@ -56,13 +49,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, DetailActivity.class);
-                intent.putExtra(TITLE, currentMovie.getTitle());
-                intent.putExtra(POSTER, currentMovie.getPoster());
-                intent.putExtra(RELEASE_DATE, currentMovie.getReleaseDate());
-                intent.putExtra(VOTE_AVERAGE, currentMovie.getVoteAverage());
-                intent.putExtra(OVERVIEW, currentMovie.getOverview());
-                intent.putExtra(MOVIE_ID, currentMovie.getMovieId());
-
+                intent.putExtra(DetailActivity.TITLE, currentMovie.getTitle());
+                intent.putExtra(DetailActivity.POSTER, currentMovieBitmap);
+                intent.putExtra(DetailActivity.RELEASE_DATE, currentMovie.getReleaseDate());
+                intent.putExtra(DetailActivity.VOTE_AVERAGE, currentMovie.getVoteAverage());
+                intent.putExtra(DetailActivity.OVERVIEW, currentMovie.getOverview());
+                intent.putExtra(DetailActivity.MOVIE_ID, currentMovie.getMovieId());
 
                 context.startActivity(intent);
             }

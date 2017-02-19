@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity
             protected void onStartLoading() {
 
                 setUpPageTitle();
-                showProgressBar();
 
                 switch (loaderId) {
                     case NetworkUtils.CODE_TOP_RATED:
@@ -104,6 +103,7 @@ public class MainActivity extends AppCompatActivity
                         if (mMovieObjects != null) {
                             deliverResult(mMovieObjects);
                         } else {
+                            showProgressBar();
                             forceLoad();
                         }
                         break;
