@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import static com.example.android.popularmoviesstage1.data.FavoriteMoviesContract.FavoriteMoviesEntry.TABLE_NAME;
 
@@ -19,6 +20,8 @@ import static com.example.android.popularmoviesstage1.data.FavoriteMoviesContrac
 public class FavoriteMoviesProvider extends ContentProvider {
 
     public static final int CODE_FAVORITE_MOVIES = 100;
+    public static final int CODE_FAVORITE_MOVIES_WITH_ID = 101;
+
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private FavoriteMoviesDbHelper mOpenHelper;
@@ -26,10 +29,17 @@ public class FavoriteMoviesProvider extends ContentProvider {
     public static UriMatcher buildUriMatcher() {
 
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
+
         matcher.addURI(
                 FavoriteMoviesContract.CONTENT_AUTHORITY,
                 FavoriteMoviesContract.PATH_FAVORITE_MOVIES,
                 CODE_FAVORITE_MOVIES);
+
+        matcher.addURI(
+                FavoriteMoviesContract.CONTENT_AUTHORITY,
+                FavoriteMoviesContract.PATH_FAVORITE_MOVIES + "/#",
+                CODE_FAVORITE_MOVIES_WITH_ID);
+
         return matcher;
     }
 
@@ -55,7 +65,7 @@ public class FavoriteMoviesProvider extends ContentProvider {
         switch (match) {
             // Query for the tasks directory
             case CODE_FAVORITE_MOVIES:
-                retCursor =  db.query(TABLE_NAME,
+                retCursor = db.query(TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -90,10 +100,10 @@ public class FavoriteMoviesProvider extends ContentProvider {
         long id = 0;
         Uri returnUri; // URI to be returned
 
-        switch (match){
+        switch (match) {
             case CODE_FAVORITE_MOVIES:
                 id = db.insert(TABLE_NAME, null, contentValues);
-                if ( id >= 0 ) {
+                if (id >= 0) {
                     returnUri = ContentUris.withAppendedId(
                             FavoriteMoviesContract.FavoriteMoviesEntry.CONTENT_URI, id);
                 } else {
@@ -108,8 +118,33 @@ public class FavoriteMoviesProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, String s, String[] strings) {
-        return 0;
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
+
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int match = sUriMatcher.match(uri);
+        int rowsDeleted;
+
+        switch (match) {
+            case CODE_FAVORITE_MOVIES_WITH_ID:
+                // Get the task ID from the URI path
+                String id = uri.getPathSegments().get(1);
+                Log.v("PROVIDER ", "DELETED URI = " + uri);
+                Log.v("PROVIDER ", "DELETED ID = " + id);
+                // Use selections/selectionArgs to filter for this ID
+                rowsDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        // Notify the resolver of a change and return the number of items deleted
+        if (rowsDeleted != 0) {
+            // A task was deleted, set notification
+            getContext().getContentResolver()
+                    .notifyChange(FavoriteMoviesContract.FavoriteMoviesEntry.CONTENT_URI, null);
+        }
+        return rowsDeleted;
+
     }
 
     @Override

@@ -69,27 +69,27 @@ public class MoviesCursorAdapter extends RecyclerView.Adapter<MoviesCursorAdapte
             final Bitmap posterBitmap = BitmapFactory.decodeByteArray(posterByte, 0, posterByte.length);
             holder.posterImageView.setImageBitmap(posterBitmap);
 
+            int databaseIdColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry._ID);
+            final int databaseId = mCursor.getInt(databaseIdColumnIndex);
 
+            int titleColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_TITLE);
+            int releaseDateColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_DATE);
+            int ratingColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_RATING);
+            int synopsisColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_SYNOPSIS);
+            int movieIdColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_MOVIE_ID);
 
+            final String title = mCursor.getString(titleColumnIndex);
+            final String rating = mCursor.getString(ratingColumnIndex);
+            final String releaseDate = mCursor.getString(releaseDateColumnIndex);
+            final String synopsis = mCursor.getString(synopsisColumnIndex);
+            final String movieId = mCursor.getString(movieIdColumnIndex);
+
+            final Context context = holder.posterImageView.getContext();
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
-
-                    int titleColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_TITLE);
-                    int releaseDateColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_DATE);
-                    int ratingColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_RATING);
-                    int synopsisColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_SYNOPSIS);
-                    int movieIdColumnIndex = mCursor.getColumnIndex(FavoriteMoviesEntry.COLUMN_MOVIE_ID);
-
-                    String title = mCursor.getString(titleColumnIndex);
-                    String rating = mCursor.getString(ratingColumnIndex);
-                    String releaseDate = mCursor.getString(releaseDateColumnIndex);
-                    String synopsis = mCursor.getString(synopsisColumnIndex);
-                    String movieId = mCursor.getString(movieIdColumnIndex);
-
-                    Context context = holder.posterImageView.getContext();
 
                     Intent intent = new Intent(context, DetailActivity.class);
                     intent.putExtra(DetailActivity.TITLE, title);
@@ -99,7 +99,7 @@ public class MoviesCursorAdapter extends RecyclerView.Adapter<MoviesCursorAdapte
                     intent.putExtra(DetailActivity.OVERVIEW, synopsis);
                     intent.putExtra(DetailActivity.MOVIE_ID, movieId);
                     intent.putExtra(DetailActivity.INTENT_TYPE, DetailActivity.INTENT_TYPE_FAVORITES);
-
+                    intent.putExtra(DetailActivity.DATABASE_ID, databaseId);
 
                     context.startActivity(intent);
                 }

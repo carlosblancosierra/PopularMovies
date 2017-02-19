@@ -3,6 +3,7 @@ package com.example.android.popularmoviesstage1;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
@@ -53,13 +54,13 @@ public class DetailActivity extends AppCompatActivity
     public static final String RELEASE_DATE = "date";
     public static final String VOTE_AVERAGE = "vote_average";
     public static final String OVERVIEW = "overview";
-    public static final String MOVIE_ID = "id";
+    public static final String MOVIE_ID = "movieId";
+    public static final String DATABASE_ID = "databaseId";
+
 
     public static final String INTENT_TYPE = "intent_type";
     public static final int INTENT_TYPE_FAVORITES = 1;
     public static final int INTENT_TYPE_TMDB = 0;
-
-
 
 
     private VideosAdapter mVideosAdapter;
@@ -121,6 +122,17 @@ public class DetailActivity extends AppCompatActivity
         mReviewsRecyclerView.setAdapter(mReviewsAdapter);
         getSupportLoaderManager().initLoader(REVIEWS_LOADER_ID, null, DetailActivity.this);
 
+        favCheckBox = (CheckBox) findViewById(R.id.action_fav);
+
+        switch (mIntentType) {
+            case (INTENT_TYPE_FAVORITES):
+                favCheckBox.setChecked(true);
+                break;
+            case (INTENT_TYPE_TMDB):
+                favCheckBox.setChecked(false);
+                break;
+
+        }
     }
 
     @Override
@@ -176,19 +188,30 @@ public class DetailActivity extends AppCompatActivity
 
         getContentResolver().insert(FavoriteMoviesEntry.CONTENT_URI, values);
 
-        Toast.makeText(DetailActivity.this, "Added Movie to Favorites", Toast.LENGTH_SHORT);
+        Toast.makeText(DetailActivity.this, "Added Movie to Favorites", Toast.LENGTH_SHORT).show();
+    }
+
+    public void removeCurrentMovieFromFavorites() {
+
+        String stringId = Integer.toString(getIntent().getIntExtra(DATABASE_ID, 15));
+        Uri uri = FavoriteMoviesEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(stringId).build();
+
+        getContentResolver().delete(uri, null, null);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        switch (mIntentType){
+        switch (mIntentType) {
             case (INTENT_TYPE_FAVORITES):
+                if (!(favCheckBox.isChecked())) {
+                    removeCurrentMovieFromFavorites();
+                }
                 break;
             case (INTENT_TYPE_TMDB):
-                favCheckBox = (CheckBox) findViewById(R.id.action_fav);
-                if (favCheckBox.isChecked()){
+                if (favCheckBox.isChecked()) {
                     addCurrentMovieToFavorites();
                 }
         }
