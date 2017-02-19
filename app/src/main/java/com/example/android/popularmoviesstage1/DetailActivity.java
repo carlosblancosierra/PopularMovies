@@ -155,11 +155,11 @@ public class DetailActivity extends AppCompatActivity
         posterBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
 
-        values.put(FavoriteMoviesEntry.COLUMN_DATE, releaseDate);
+//        values.put(FavoriteMoviesEntry.COLUMN_DATE, releaseDate);
         values.put(FavoriteMoviesEntry.COLUMN_POSTER, byteArray);
-        values.put(FavoriteMoviesEntry.COLUMN_RATING, voteAverage);
-        values.put(FavoriteMoviesEntry.COLUMN_SYNOPSIS, overview);
-        values.put(FavoriteMoviesEntry.COLUMN_TITLE, title);
+//        values.put(FavoriteMoviesEntry.COLUMN_RATING, voteAverage);
+//        values.put(FavoriteMoviesEntry.COLUMN_SYNOPSIS, overview);
+//        values.put(FavoriteMoviesEntry.COLUMN_TITLE, title);
 
         getContentResolver().insert(FavoriteMoviesEntry.CONTENT_URI, values);
 
@@ -169,7 +169,7 @@ public class DetailActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-//        addCurrentMovieToFavorites();
+        addCurrentMovieToFavorites();
     }
 
 

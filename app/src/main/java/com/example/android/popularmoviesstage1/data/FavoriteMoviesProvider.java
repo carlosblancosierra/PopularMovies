@@ -25,10 +25,11 @@ public class FavoriteMoviesProvider extends ContentProvider {
 
     public static UriMatcher buildUriMatcher() {
 
-        final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String authority = FavoriteMoviesContract.CONTENT_AUTHORITY;
-
-        matcher.addURI(authority, FavoriteMoviesContract.PATH_FAVORITE_MOVIES, CODE_FAVORITE_MOVIES);
+        UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
+        matcher.addURI(
+                FavoriteMoviesContract.CONTENT_AUTHORITY,
+                FavoriteMoviesContract.PATH_FAVORITE_MOVIES,
+                CODE_FAVORITE_MOVIES);
         return matcher;
     }
 
@@ -92,7 +93,7 @@ public class FavoriteMoviesProvider extends ContentProvider {
         switch (match){
             case CODE_FAVORITE_MOVIES:
                 id = db.insert(TABLE_NAME, null, contentValues);
-                if ( id > 0 ) {
+                if ( id >= 0 ) {
                     returnUri = ContentUris.withAppendedId(
                             FavoriteMoviesContract.FavoriteMoviesEntry.CONTENT_URI, id);
                 } else {

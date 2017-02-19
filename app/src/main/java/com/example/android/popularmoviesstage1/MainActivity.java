@@ -2,6 +2,7 @@ package com.example.android.popularmoviesstage1;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 
 import com.example.android.popularmoviesstage1.Utils.MovieJsonUtil;
 import com.example.android.popularmoviesstage1.Utils.NetworkUtils;
+import com.example.android.popularmoviesstage1.data.FavoriteMoviesContract;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
     private MovieAdapter mMovieAdapter;
+    private MoviesCursorAdapter mCursorAdapter;
     private String LOG_TAG = MainActivity.class.getSimpleName();
     private boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
     private String PAGE_TITE;
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity
         mPageTitleTextView = (TextView) findViewById(R.id.app_title);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
         mMovieAdapter = new MovieAdapter();
+        mCursorAdapter = new MoviesCursorAdapter(this);
 
         GridLayoutManager manager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(manager);
@@ -58,7 +62,6 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mMovieAdapter);
 
         loader = getPreferredList();
-
         getSupportLoaderManager().initLoader(loader, null, this);
 
         PreferenceManager.getDefaultSharedPreferences(this)
@@ -85,49 +88,98 @@ public class MainActivity extends AppCompatActivity
 
         return new AsyncTaskLoader(this) {
 
-            ArrayList<MovieObject> movieObjects = null;
+            ArrayList<MovieObject> mMovieObjects = null;
+            Cursor mMoviesCursor = null;
+
 
             @Override
             protected void onStartLoading() {
 
                 setUpPageTitle();
-                if (movieObjects != null) {
-                    deliverResult(movieObjects);
-                } else {
-                    showProgressBar();
-                    forceLoad();
+                showProgressBar();
+
+                switch (loaderId) {
+                    case NetworkUtils.CODE_TOP_RATED:
+                    case NetworkUtils.CODE_POPULAR:
+                        if (mMovieObjects != null) {
+                            deliverResult(mMovieObjects);
+                        } else {
+                            forceLoad();
+                        }
+                        break;
+                    case NetworkUtils.CODE_FAVORITES:
+                        if (mMoviesCursor != null) {
+                            // Delivers any previously loaded data immediately
+                            deliverResult(mMoviesCursor);
+                        } else {
+                        showProgressBar();
+                        forceLoad();
+                        }
+                        break;
                 }
             }
 
             @Override
             public Object loadInBackground() {
-                String jsonResponse = "";
-                try {
-                    jsonResponse = NetworkUtils.getResponseFromHttpUrl(NetworkUtils.buildUrl(loaderId, MainActivity.this));
-                    if (jsonResponse != null) {
 
-                        movieObjects = MovieJsonUtil.getMovieObjects(jsonResponse);
-                        ArrayList<String> moviesPosterArray = MovieJsonUtil.getPicturesURLs(jsonResponse);
+                switch (loaderId) {
+                    case NetworkUtils.CODE_TOP_RATED:
+                    case NetworkUtils.CODE_POPULAR:
+                        String jsonResponse = "";
+                        try {
+                            jsonResponse = NetworkUtils.getResponseFromHttpUrl(NetworkUtils.buildUrl(loaderId, MainActivity.this));
+                            if (jsonResponse != null) {
 
-                        for (int i = 0; i < moviesPosterArray.size(); i++) {
-                            String moviePosterFile = moviesPosterArray.get(i);
-                            Bitmap currentPosterBitmap = NetworkUtils.loadImage(moviePosterFile);
-                            movieObjects.get(i).setPoster(currentPosterBitmap);
-                            Log.v(LOG_TAG, "Movie Object: " + movieObjects.get(i).getTitle() + " poster: "
-                                    + moviePosterFile);
+                                mMovieObjects = MovieJsonUtil.getMovieObjects(jsonResponse);
+                                ArrayList<String> moviesPosterArray = MovieJsonUtil.getPicturesURLs(jsonResponse);
+
+                                for (int i = 0; i < moviesPosterArray.size(); i++) {
+                                    String moviePosterFile = moviesPosterArray.get(i);
+                                    Bitmap currentPosterBitmap = NetworkUtils.loadImage(moviePosterFile);
+                                    mMovieObjects.get(i).setPoster(currentPosterBitmap);
+//                                    Log.v(LOG_TAG, "Movie Object: " + mMovieObjects.get(i).getTitle() + " poster: "
+//                                            + moviePosterFile);
+                                }
+                            }
+                            return mMovieObjects;
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            return null;
                         }
-                    }
-                    return movieObjects;
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
+                    case NetworkUtils.CODE_FAVORITES:
+
+                        try {
+                            mMoviesCursor = getContentResolver().query(
+                                    FavoriteMoviesContract.FavoriteMoviesEntry.CONTENT_URI,
+                                    null,
+                                    null,
+                                    null,
+                                    null);
+                            return mMoviesCursor;
+                        } catch (Exception e) {
+                            Log.e(TAG, "Failed to asynchronously load data.");
+                            e.printStackTrace();
+                            return null;
+                        }
+                    default:
+                        return null;
                 }
+
             }
 
             @Override
             public void deliverResult(Object data) {
-                movieObjects = (ArrayList<MovieObject>) data;
+                switch (loaderId) {
+                    case NetworkUtils.CODE_TOP_RATED:
+                    case NetworkUtils.CODE_POPULAR:
+                        mMovieObjects = (ArrayList<MovieObject>) data;
+                        break;
+                    case NetworkUtils.CODE_FAVORITES:
+                        mMoviesCursor = (Cursor) data;
+                        break;
+                }
                 super.deliverResult(data);
             }
         };
@@ -185,18 +237,35 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader loader, Object data) {
+
         showResults();
 
-        ArrayList movies = (ArrayList) data;
-        mMovieAdapter.setMovieObjects(movies);
+        switch (loader.getId()) {
+            case NetworkUtils.CODE_TOP_RATED:
+            case NetworkUtils.CODE_POPULAR:
+
+                ArrayList movies = (ArrayList) data;
+                mMovieAdapter.setMovieObjects(movies);
+                mRecyclerView.setAdapter(mMovieAdapter);
+
+                break;
+
+            case NetworkUtils.CODE_FAVORITES:
+                Cursor cursor = (Cursor) data;
+                mCursorAdapter.swapCursor(cursor);
+                mRecyclerView.setAdapter(mCursorAdapter);
+                break;
+        }
+
         setUpPageTitle();
+
+
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -231,11 +300,12 @@ public class MainActivity extends AppCompatActivity
             Log.d(TAG, "onStart: preferences were updated");
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             loader = getPreferredList();
+            showProgressBar();
             getSupportLoaderManager().restartLoader(loader, null, this);
             PREFERENCES_HAVE_BEEN_UPDATED = false;
         }
 
-        setUpPageTitle();
+//        setUpPageTitle();
     }
 
     @Override
@@ -282,7 +352,7 @@ public class MainActivity extends AppCompatActivity
             preferredListID = NetworkUtils.CODE_FAVORITES;
         }
 
-        Log.v(LOG_TAG, "List value: " + preferredList + ", id: " + preferredListID );
+        Log.v(LOG_TAG, "List value: " + preferredList + ", id: " + preferredListID);
         return preferredListID;
     }
 }
