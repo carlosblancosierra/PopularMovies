@@ -98,6 +98,8 @@ public class MoviesCursorAdapter extends RecyclerView.Adapter<MoviesCursorAdapte
                     intent.putExtra(DetailActivity.VOTE_AVERAGE, rating);
                     intent.putExtra(DetailActivity.OVERVIEW, synopsis);
                     intent.putExtra(DetailActivity.MOVIE_ID, movieId);
+                    intent.putExtra(DetailActivity.INTENT_TYPE, DetailActivity.INTENT_TYPE_FAVORITES);
+
 
                     context.startActivity(intent);
                 }

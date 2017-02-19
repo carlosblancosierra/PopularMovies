@@ -45,13 +45,22 @@ public class DetailActivity extends AppCompatActivity
     private String voteAverage;
     private String overview;
     private String mMovieId;
+    private int mIntentType;
 
-    public static String TITLE = "title";
-    public static String POSTER = "poster";
-    public static String RELEASE_DATE = "date";
-    public static String VOTE_AVERAGE = "vote_average";
-    public static String OVERVIEW = "overview";
-    public static String MOVIE_ID = "id";
+
+    public static final String TITLE = "title";
+    public static final String POSTER = "poster";
+    public static final String RELEASE_DATE = "date";
+    public static final String VOTE_AVERAGE = "vote_average";
+    public static final String OVERVIEW = "overview";
+    public static final String MOVIE_ID = "id";
+
+    public static final String INTENT_TYPE = "intent_type";
+    public static final int INTENT_TYPE_FAVORITES = 1;
+    public static final int INTENT_TYPE_TMDB = 0;
+
+
+
 
     private VideosAdapter mVideosAdapter;
     private ReviewsAdapter mReviewsAdapter;
@@ -79,6 +88,8 @@ public class DetailActivity extends AppCompatActivity
         voteAverage = intent.getStringExtra(VOTE_AVERAGE);
         overview = intent.getStringExtra(OVERVIEW);
         mMovieId = intent.getStringExtra(MOVIE_ID);
+        mIntentType = intent.getIntExtra(INTENT_TYPE, 2);
+
 
         mTitleTextView = (TextView) findViewById(R.id.detail_view_movie_title);
         mPosterImageView = (ImageView) findViewById(R.id.detail_view_movie_poster);
@@ -171,7 +182,16 @@ public class DetailActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        addCurrentMovieToFavorites();
+
+        switch (mIntentType){
+            case (INTENT_TYPE_FAVORITES):
+                break;
+            case (INTENT_TYPE_TMDB):
+                favCheckBox = (CheckBox) findViewById(R.id.action_fav);
+                if (favCheckBox.isChecked()){
+                    addCurrentMovieToFavorites();
+                }
+        }
     }
 
 

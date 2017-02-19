@@ -55,6 +55,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
                 intent.putExtra(DetailActivity.VOTE_AVERAGE, currentMovie.getVoteAverage());
                 intent.putExtra(DetailActivity.OVERVIEW, currentMovie.getOverview());
                 intent.putExtra(DetailActivity.MOVIE_ID, currentMovie.getMovieId());
+                intent.putExtra(DetailActivity.INTENT_TYPE, DetailActivity.INTENT_TYPE_TMDB);
 
                 context.startActivity(intent);
             }
