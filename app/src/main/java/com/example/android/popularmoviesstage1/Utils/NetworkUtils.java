@@ -4,6 +4,9 @@ package com.example.android.popularmoviesstage1.Utils;
  * Created by carlosblanco on 1/28/17.
  */
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
@@ -36,15 +39,30 @@ public class NetworkUtils {
     final static String PARAM_API_KEY = "api_key";
     final static String API_KEY = "f4d478c237eb3ff26f0f228d47c9327f";
 
+    final static String YOUTUBE_BASE_URI = "https://www.youtube.com/watch";
+    final static String YOUTUBE_PARAMETER = "v";
 
-    /**
-     * Builds the URL used to query Github.
-     *
-     *
-     * @return The URL to use to query the weather server.
-     */
-    public static URL buildUrl() {
-        Uri builtUri = Uri.parse(TMBD_POPULAR_BASE_URL).buildUpon()
+    public final static int CODE_POPULAR = 0;
+    public final static int CODE_TOP_RATED = 1;
+    public final static int CODE_FAVORITES = 2;
+
+
+    public static URL buildUrl(int preferredOptionId, Context context) {
+
+        String baseUrl = "";
+
+        switch (preferredOptionId) {
+            case (CODE_POPULAR):
+                baseUrl = TMBD_POPULAR_BASE_URL;
+                break;
+            case (CODE_TOP_RATED):
+                baseUrl = TMBD_TOP_RATED_BASE_URL;
+                break;
+            default:
+                return null;
+        }
+
+        Uri builtUri = Uri.parse(baseUrl).buildUpon()
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)
                 .appendQueryParameter(PARAM_LANGUAGE, PARAM_LANGUAGE_ENGLISH)
                 .appendQueryParameter(PARAM_PAGE, PARAM_PAGE_QUANTITY)
@@ -87,4 +105,65 @@ public class NetworkUtils {
             urlConnection.disconnect();
         }
     }
+
+    public static Bitmap loadImage(String posterUrl) {
+        URL imageUrl = null;
+        Bitmap bmp = null;
+        try {
+            imageUrl = new URL(posterUrl);
+            bmp = BitmapFactory.decodeStream(imageUrl.openConnection().getInputStream());
+            return bmp;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    //https://api.themoviedb.org/3/movie/278/videos?api_key=f4d478c237eb3ff26f0f228d47c9327f&language=en-US&page=1
+    public static URL buildVideoUrl(String key, Context context) {
+
+        String baseUrl = "https://api.themoviedb.org/3/movie/" + key + "/videos?";
+
+        Uri builtUri = Uri.parse(baseUrl).buildUpon()
+                .appendQueryParameter(PARAM_API_KEY, API_KEY)
+                .appendQueryParameter(PARAM_LANGUAGE, PARAM_LANGUAGE_ENGLISH)
+                .appendQueryParameter(PARAM_PAGE, PARAM_PAGE_QUANTITY)
+                .build();
+
+        Log.v(LOG_TAG, "Video URL: " + builtUri.toString() );
+
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
+    public static URL buildReviewsUrl(String key, Context context) {
+
+        String baseUrl = "https://api.themoviedb.org/3/movie/" + key + "/reviews?";
+
+        Uri builtUri = Uri.parse(baseUrl).buildUpon()
+                .appendQueryParameter(PARAM_API_KEY, API_KEY)
+                .appendQueryParameter(PARAM_LANGUAGE, PARAM_LANGUAGE_ENGLISH)
+                .appendQueryParameter(PARAM_PAGE, PARAM_PAGE_QUANTITY)
+                .build();
+
+        Log.v(LOG_TAG, "Reviews URL: " + builtUri.toString() );
+
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
 }
+
