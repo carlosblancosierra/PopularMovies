@@ -80,6 +80,7 @@
         </LinearLayout>
 
         <ImageView
+            android:src="@drawable/madmax_poster"
             android:id="@+id/detail_view_movie_poster"
             android:layout_width="match_parent"
             android:layout_height="400dp"
@@ -122,7 +123,7 @@
             android:padding="10dp"
             android:textAppearance="?android:textAppearanceSmall"
             android:textColor="@android:color/white"
-            android:text="Reviews" />
+            tools:text="Reviews" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/detail_recyclerview_reviews"

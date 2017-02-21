@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity
     private boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
     private String PAGE_TITE;
     private TextView mPageTitleTextView;
-    private int loader;
+    public static int loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,8 +112,8 @@ public class MainActivity extends AppCompatActivity
                             // Delivers any previously loaded data immediately
                             deliverResult(mMoviesCursor);
                         } else {
-                        showProgressBar();
-                        forceLoad();
+                            showProgressBar();
+                            forceLoad();
                         }
                         break;
                 }
@@ -264,7 +264,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(Loader loader) {
-
+        mCursorAdapter.swapCursor(null);
+        mMovieAdapter.setMovieObjects(null);
     }
 
     @Override
@@ -296,16 +297,16 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
+
         if (PREFERENCES_HAVE_BEEN_UPDATED) {
+            loader = getPreferredList();
             Log.d(TAG, "onStart: preferences were updated");
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            loader = getPreferredList();
             showProgressBar();
             getSupportLoaderManager().restartLoader(loader, null, this);
             PREFERENCES_HAVE_BEEN_UPDATED = false;
         }
 
-//        setUpPageTitle();
     }
 
     @Override

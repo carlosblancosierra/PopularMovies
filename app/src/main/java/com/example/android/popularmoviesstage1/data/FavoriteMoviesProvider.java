@@ -140,8 +140,8 @@ public class FavoriteMoviesProvider extends ContentProvider {
         // Notify the resolver of a change and return the number of items deleted
         if (rowsDeleted != 0) {
             // A task was deleted, set notification
-            getContext().getContentResolver()
-                    .notifyChange(FavoriteMoviesContract.FavoriteMoviesEntry.CONTENT_URI, null);
+
+            getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsDeleted;
 
@@ -151,4 +151,6 @@ public class FavoriteMoviesProvider extends ContentProvider {
     public int update(@NonNull Uri uri, ContentValues contentValues, String s, String[] strings) {
         return 0;
     }
+
+
 }

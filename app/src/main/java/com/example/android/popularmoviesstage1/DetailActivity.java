@@ -79,7 +79,7 @@ public class DetailActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.activity_detail_3);
 
         Intent intent = getIntent();
 
@@ -197,7 +197,12 @@ public class DetailActivity extends AppCompatActivity
         Uri uri = FavoriteMoviesEntry.CONTENT_URI;
         uri = uri.buildUpon().appendPath(stringId).build();
 
-        getContentResolver().delete(uri, null, null);
+        int rowsDeleted = getContentResolver().delete(uri, null, null);
+
+        if (rowsDeleted > 0) {
+            getContentResolver().notifyChange(uri, null);
+            Toast.makeText(DetailActivity.this, "Movie Deleted from Favorites", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

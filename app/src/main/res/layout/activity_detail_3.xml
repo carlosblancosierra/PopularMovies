@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/detail_view_movie_poster"
+            android:layout_width="165dp"
+            android:layout_height="231dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorPrimary" />
+
+        <TextView
+            android:textStyle="bold"
+            android:id="@+id/detail_view_movie_title"
+            android:layout_width="176dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Mad Max: Fury Road"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@color/colorPrimary" />
+
+
+        <TextView
+            android:textStyle="bold"
+            android:id="@+id/detail_view_movie_release_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/detail_view_movie_title"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="(2015)"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:textStyle="bold"
+            android:id="@+id/detail_view_movie_vote_average"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/detail_view_movie_title"
+            android:layout_marginLeft="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@id/detail_view_movie_release_date"
+            android:text="8.1"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@android:color/white" />
+
+        <CheckBox
+            android:textStyle="bold"
+            android:id="@+id/action_fav"
+            android:layout_width="151dp"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/detail_view_movie_poster"
+            android:layout_alignRight="@+id/detail_view_movie_poster"
+            android:layout_below="@+id/detail_view_movie_poster"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="17dp"
+            android:layout_toRightOf="@+id/detail_view_movie_overview"
+            android:gravity="center"
+            android:text="Add to Favorite"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@android:color/white" />
+
+
+        <TextView
+            android:id="@+id/detail_view_movie_overview"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/action_fav"
+            android:layout_alignLeft="@+id/detail_view_movie_release_date"
+            android:layout_alignStart="@+id/detail_view_movie_release_date"
+            android:layout_below="@+id/detail_view_movie_release_date"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Years after the collapse of civilization, the tyrannical Immortan Joe enslaves apocalypse survivors inside the desert fortress the Citadel. When the warrior Imperator Furiosa (Charlize Theron) leads the despot's five wives in a daring escape, she forges an alliance with Max Rockatansky (Tom Hardy), a loner and former captive. Fortified in the massive, armored truck the War Rig, they try to outrun the ruthless warlord and his henchmen in a deadly high-speed chase through the Wasteland"
+            android:textAlignment="center"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@android:color/white"
+            android:textStyle="normal" />
+
+
+        <TextView
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Related Videos"
+            android:id="@+id/trailer_label"
+            android:textColor="@color/colorPrimary"
+            android:padding="10dp"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:layout_below="@id/detail_view_movie_overview"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/detail_recyclerview_trailers"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/trailer_label"
+            android:nestedScrollingEnabled="false"
+            android:layout_alignRight="@+id/action_fav"
+            android:layout_alignEnd="@+id/action_fav" />
+
+        <TextView
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reviews"
+            android:id="@+id/reviews_label"
+            android:textColor="@color/colorPrimary"
+            android:padding="10dp"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:layout_below="@id/detail_recyclerview_trailers"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/detail_recyclerview_reviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/detail_recyclerview_trailers"
+            android:layout_alignRight="@+id/detail_recyclerview_trailers"
+            android:layout_below="@+id/reviews_label"
+            android:nestedScrollingEnabled="false"
+            android:layout_alignLeft="@+id/detail_recyclerview_trailers"
+            android:layout_alignStart="@+id/detail_recyclerview_trailers" />
+    </RelativeLayout>
+</ScrollView>
+
+
+
+
+
+
+
+
+

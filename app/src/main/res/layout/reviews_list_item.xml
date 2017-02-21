@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFF">
+    android:background="#FFFF"
+    android:layout_margin="8dp"
+    android:orientation="vertical">
 
 
     <TextView
-        android:textColor="@color/colorPrimaryDark"
-        android:textAppearance="?android:textAppearanceSmall"
-        android:text="Carlos:"
-        android:gravity="center"
-        android:padding="8dp"
+        android:id="@+id/textViewReviewAuthor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textViewReviewAuthor" />
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="Carlos:"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="@color/colorPrimaryDark" />
 
     <TextView
-        android:textColor="#000000"
-        android:padding="8dp"
-        android:layout_marginLeft="10dp"
-        android:textAppearance="?android:textAppearanceSmall"
-        android:text="Very Good Movie"
+        android:id="@+id/textViewReviewContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textViewReviewContent" />
+        android:layout_marginLeft="10dp"
+        android:padding="8dp"
+        android:text="Very Good Movie"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:textColor="#000000" />
 </LinearLayout>

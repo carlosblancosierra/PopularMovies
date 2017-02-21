@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -69,12 +70,12 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosAdap
     public class VideosAdapterViewHolder extends RecyclerView.ViewHolder{
 
         private TextView mName;
-        private TextView mActionPlay;
+        private ImageView mActionPlay;
 
         public VideosAdapterViewHolder(View itemView) {
             super(itemView);
             mName = (TextView) itemView.findViewById(R.id.videos_list_item);
-            mActionPlay = (TextView) itemView.findViewById(R.id.videos_list_action_play_trailer);
+            mActionPlay = (ImageView) itemView.findViewById(R.id.videos_list_action_play_trailer);
         }
     }
 
